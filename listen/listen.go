@@ -29,7 +29,7 @@ func main() {
 	}
 
 	// 3. PRINT BROADCASTED MESSAGE
-	fmt.Printf("%s sent this: %s\n", addr, buf[:n])
+	fmt.Printf("%s sent this: %s\n", addr, string(buf[:n]))
 }
 
 // package main
@@ -52,5 +52,5 @@ func main() {
 // 		panic(err)
 // 	}
 
-// 	fmt.Printf("%s sent this: %s\n", addr, buf[:n])
+// 	fmt.Printf("%s sent this: %s\n", addr, string(buf[:n]))
 // }
