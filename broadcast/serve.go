@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/binary"
 	"fmt"
+	"math"
 	"net"
 	"os"
 	"time"
@@ -29,7 +30,6 @@ func main() {
 
 	// 1. Create UDP Connection
 
-	// addr = *net.UDPAddr
 	// Get local address
 	conn, err := net.Dial("udp", "192.168.2.20:5000")
 	if err != nil {
@@ -64,10 +64,11 @@ func main() {
 
 	// 2.2 Divide data into packets of 1444 bytes
 	fileLen := len(fileBytes)
-	no_of_pkts := fileLen / 1440
+	t := float64(fileLen) / 1440.0
+	no_of_pkts := int(math.Ceil(t))
 	fmt.Printf("Size: %d bytes Packets: %d\n", fileLen, no_of_pkts)
 
-	for i := 0; i <= no_of_pkts; i++ {
+	for i := 0; i < no_of_pkts; i++ {
 		// 2.3 Set first 4 bytes as sequence number
 		pkt := make([]byte, 1444)
 		binary.BigEndian.PutUint16(pkt[:2], uint16(i+1))
@@ -83,8 +84,7 @@ func main() {
 		udpl.WriteToUDP(pkt, bcast_addr)
 
 		time.Sleep(time.Millisecond * 200)
-		fmt.Printf("Sent packet:")
-		// fmt.Println(pkt)
+		fmt.Println("Sent packet")
 	}
 	fmt.Println("Done sending")
 }

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/binary"
 	"fmt"
 	"net"
 )
@@ -20,6 +21,7 @@ func main() {
 	defer udpconn.Close()
 	fmt.Printf("listen script on: \n")
 
+	var total_seq int
 	// 2. LISTEN TO BROADCASTS
 	var totalFile []byte
 	for {
@@ -28,9 +30,17 @@ func main() {
 		if err != nil {
 			panic(err)
 		}
+
 		// 3. PROCESS BROADCASTED MESSAGE
+
+		// 3.1 Get sequence headers
+		seq := binary.BigEndian.Uint16(buf)
+		total_seq = int(binary.BigEndian.Uint16(buf[2:]))
+		fmt.Printf("Packet %d out of %d\n", seq, total_seq)
+
+		// 3.2 Get payload
 		fmt.Printf("%s sent this: %d\n", addr, n)
-		fmt.Println(buf)
+		// fmt.Println(buf)
 		totalFile = append(totalFile, buf...)
 	}
 }
