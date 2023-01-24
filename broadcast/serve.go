@@ -43,7 +43,7 @@ func main() {
 		err = fmt.Errorf("listenudp :%s", addr.String())
 	}
 	defer udpl.Close()
-	fmt.Printf("Connected...  %s\n", addr)
+	fmt.Printf("%s is connected...\n", addr)
 
 	// TESTING -----
 	// 2. (TEST) Write to connection
@@ -82,9 +82,7 @@ func main() {
 
 		// 3. Broadcast packet
 		udpl.WriteToUDP(pkt, bcast_addr)
-
 		time.Sleep(time.Millisecond * 200)
-		fmt.Println("Sent packet")
 	}
 	fmt.Println("Done sending")
 }
