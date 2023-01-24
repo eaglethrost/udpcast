@@ -4,6 +4,7 @@ import (
 	"encoding/binary"
 	"fmt"
 	"net"
+	"os"
 )
 
 const (
@@ -28,6 +29,8 @@ func main() {
 	var totalFile []byte
 	for {
 		if seq == total_seq { // if all file data is recv
+			total_seq = 0
+			seq = 0
 			break
 		}
 		buf := make([]byte, 1444)
@@ -56,29 +59,17 @@ func main() {
 		// 3.3 Display
 		// how many bytes have we received
 		fmt.Printf("Length of data captured: %d bytes\n", len(totalFile)) // need full length
+	}
 
+	// optional: create file from data
+	fileName := "./test.zip"
+	e := os.WriteFile(fileName, totalFile, 0664)
+	if e != nil {
+		fmt.Println("Error!")
 	}
 }
 
-// package main
-
-// import (
-// 	"fmt"
-// 	"net"
-// )
-
-// func main() {
-// 	pc, err := net.ListenPacket("udp4", ":5000")
-// 	if err != nil {
-// 		panic(err)
-// 	}
-// 	defer pc.Close()
-
-// 	buf := make([]byte, 1024)
-// 	n, addr, err := pc.ReadFrom(buf)
-// 	if err != nil {
-// 		panic(err)
-// 	}
-
-// 	fmt.Printf("%s sent this: %s\n", addr, string(buf[:n]))
-// }
+// Interesting to do:
+// 1. Create file from data
+// 2. Store data len in packet
+// 3. Checksum
