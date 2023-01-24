@@ -11,8 +11,6 @@ const (
 )
 
 func main() {
-	fmt.Println("listen script")
-
 	// 1. TAP INTO CONNECTION using server port information
 	listenAddr := &net.UDPAddr{IP: net.IPv4(0, 0, 0, 0), Port: PORT}
 	udpconn, err := net.ListenUDP("udp", listenAddr)
@@ -20,16 +18,21 @@ func main() {
 		panic(err)
 	}
 	defer udpconn.Close()
+	fmt.Printf("listen script on: \n")
 
 	// 2. LISTEN TO BROADCASTS
-	buf := make([]byte, 1444)
-	n, addr, err := udpconn.ReadFrom(buf)
-	if err != nil {
-		panic(err)
+	var totalFile []byte
+	for {
+		buf := make([]byte, 1444)
+		n, addr, err := udpconn.ReadFrom(buf)
+		if err != nil {
+			panic(err)
+		}
+		// 3. PROCESS BROADCASTED MESSAGE
+		fmt.Printf("%s sent this: %d\n", addr, n)
+		fmt.Println(buf)
+		totalFile = append(totalFile, buf...)
 	}
-
-	// 3. PRINT BROADCASTED MESSAGE
-	fmt.Printf("%s sent this: %s\n", addr, string(buf[:n]))
 }
 
 // package main
